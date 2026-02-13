@@ -1,0 +1,34 @@
+[
+    {
+        "STT":"1",
+        "STT Thông tư":"22",
+        "Mã thuốc":"123456",
+        "Tên hoạt chất":"Paracetamol",
+        "Nồng độ\/Hàm lượng":"500mg",
+        "Dạng bào chế":"viên nén bao phim",
+        "Dạng trình bày":"",
+        "Đường dùng":"Uống",
+        "Đơn vị tính":"Viên ",
+        "Nhóm TCKT":"Nhóm 4",
+        "Đơn giá tham khảo":"480",
+        "Giá Min":"",
+        "Giá Max":"",
+        "Số kết quả tìm thấy":""
+    },
+    {
+        "STT":"2",
+        "STT Thông tư":"33",
+        "Mã thuốc":"222222",
+        "Tên hoạt chất":"Fexofenadin",
+        "Nồng độ\/Hàm lượng":"60mg",
+        "Dạng bào chế":"viên nén bao phim",
+        "Dạng trình bày":"",
+        "Đường dùng":"Uống",
+        "Đơn vị tính":"Viên ",
+        "Nhóm TCKT":"Nhóm 4",
+        "Đơn giá tham khảo":"1,960",
+        "Giá Min":"",
+        "Giá Max":"",
+        "Số kết quả tìm thấy":""
+    }
+]

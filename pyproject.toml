@@ -1,0 +1,11 @@
+[tool.pyright]
+include = ["."]
+pythonVersion = "3.14"
+pythonPlatform = "Windows"
+extraPaths = ["."]
+reportMissingImports = false
+reportMissingModuleSource = false
+
+[tool.pyre]
+source_directories = ["."]
+search_path = ["."]
