@@ -1,6 +1,6 @@
 [Setup]
 AppName=Tra Cuu Gia Thuoc
-AppVersion=2.0.0
+AppVersion=2.0.3
 DefaultDirName={autopf}\Tra Cuu Gia Thuoc
 DefaultGroupName=Tra Cuu Gia Thuoc
 OutputDir=.

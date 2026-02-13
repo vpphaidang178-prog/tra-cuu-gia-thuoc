@@ -9,7 +9,25 @@ import secrets
 import httpx
 from dotenv import load_dotenv
 
-load_dotenv()
+import sys
+
+def load_env():
+    if getattr(sys, 'frozen', False):
+        # Running as compiled exe
+        base_dir = os.path.dirname(os.path.abspath(sys.executable))
+        env_path = os.path.join(base_dir, '_internal', '.env')
+        if os.path.exists(env_path):
+            load_dotenv(env_path)
+            return
+
+        # Fallback for some pyinstaller configs
+        env_path = os.path.join(base_dir, '.env')
+        if os.path.exists(env_path):
+             load_dotenv(env_path)
+    else:
+        load_dotenv()
+
+load_env()
 
 SUPABASE_URL = os.getenv("SUPABASE_URL", "")
 SUPABASE_ANON_KEY = os.getenv("SUPABASE_ANON_KEY", "")

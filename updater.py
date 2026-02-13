@@ -5,12 +5,12 @@ import webbrowser
 import requests
 from PyQt6.QtWidgets import QMessageBox
 from version import VERSION
-from supabase_manager import SupabaseManager  # Assuming you have a SupabaseManager
+from supabase_manager import SupabaseDataManager  # Assuming you have a SupabaseManager
 
 class AppUpdater:
     def __init__(self, parent=None):
         self.parent = parent
-        self.supabase = SupabaseManager() # Or get the client differently
+        self.supabase = SupabaseDataManager() # Or get the client differently
         # URL of the version.json file in Supabase Storage
         # You need to replace this with your actual public URL
         self.version_url = f"{self.supabase.supabase_url}/storage/v1/object/public/releases/version.json"
