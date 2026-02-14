@@ -5,8 +5,8 @@ Sử dụng SQLite để lưu trữ dữ liệu thuốc
 
 import sqlite3
 import os
-import pandas as pd
-from typing import Optional
+import pandas as pd  # type: ignore
+from typing import Optional, List, Dict
 
 
 # ============================================================
@@ -49,16 +49,16 @@ THUOC_CHUNG_HEADERS = [
 ]
 
 # Thuốc Generic
-THUOC_GENERIC_COLUMNS = THUOC_CHUNG_COLUMNS[:]
-THUOC_GENERIC_HEADERS = THUOC_CHUNG_HEADERS[:]
+THUOC_GENERIC_COLUMNS = list(THUOC_CHUNG_COLUMNS)
+THUOC_GENERIC_HEADERS = list(THUOC_CHUNG_HEADERS)
 
 # Biệt dược gốc
-THUOC_BIET_DUOC_COLUMNS = THUOC_CHUNG_COLUMNS[:]
-THUOC_BIET_DUOC_HEADERS = THUOC_CHUNG_HEADERS[:]
+THUOC_BIET_DUOC_COLUMNS = list(THUOC_CHUNG_COLUMNS)
+THUOC_BIET_DUOC_HEADERS = list(THUOC_CHUNG_HEADERS)
 
 # Thuốc Dược liệu
-THUOC_DUOC_LIEU_COLUMNS = THUOC_CHUNG_COLUMNS[:]
-THUOC_DUOC_LIEU_HEADERS = THUOC_CHUNG_HEADERS[:]
+THUOC_DUOC_LIEU_COLUMNS = list(THUOC_CHUNG_COLUMNS)
+THUOC_DUOC_LIEU_HEADERS = list(THUOC_CHUNG_HEADERS)
 
 # ============================================================
 # SCHEMA: Dược liệu (raw)
@@ -252,17 +252,17 @@ class DatabaseManager:
         else:
             df = pd.read_excel(file_path, sheet_name=sheet_name or 0, dtype=str)
 
-        col_names = [col_name for col_name, _ in columns]
+        col_names: List[str] = [col_name for col_name, _ in columns]
         num_cols = min(len(df.columns), len(col_names))
         df_subset = df.iloc[:, :num_cols]
-        df_subset.columns = col_names[:num_cols]
+        df_subset.columns = col_names[:num_cols]  # type: ignore
         df_subset = df_subset.fillna("")
 
         conn = self._get_connection()
         try:
             conn.execute(f"DELETE FROM {table_name}")
             placeholders = ", ".join(["?"] * num_cols)
-            insert_cols = ", ".join(col_names[:num_cols])
+            insert_cols = ", ".join(col_names[:num_cols])  # type: ignore
             sql = f"INSERT INTO {table_name} ({insert_cols}) VALUES ({placeholders})"
             rows = df_subset.values.tolist()
             conn.executemany(sql, rows)
@@ -270,6 +270,7 @@ class DatabaseManager:
             return len(rows)
         finally:
             conn.close()
+        return 0
 
     def get_all_data(self, table_name: str) -> list:
         """Lấy tất cả dữ liệu từ bảng."""
@@ -281,6 +282,8 @@ class DatabaseManager:
             return cursor.fetchall()
         finally:
             conn.close()
+        return []
+
 
     def search_data(self, table_name: str, keyword: str,
                     filters: Optional[list] = None,
@@ -300,8 +303,8 @@ class DatabaseManager:
         col_names = [col_name for col_name, _ in columns]
         select_cols = ", ".join(col_names)
 
-        conditions = []
-        params = []
+        conditions: List[str] = []
+        params: List[object] = []
 
         if keyword and keyword.strip():
             # Normalize keyword: remove spaces, lowercase for matching
@@ -400,6 +403,7 @@ class DatabaseManager:
             return cursor.fetchall()
         finally:
             conn.close()
+        return []
 
     def get_data_by_ids(self, table_name: str, ids: list) -> list:
         """Lấy dữ liệu theo danh sách IP."""
@@ -418,6 +422,7 @@ class DatabaseManager:
             return cursor.fetchall()
         finally:
             conn.close()
+        return []
 
     def count_search_data(self, table_name: str, keyword: str,
                           filters: Optional[list] = None,
@@ -491,6 +496,7 @@ class DatabaseManager:
             return cursor.fetchone()[0]
         finally:
             conn.close()
+        return 0
 
     def get_distinct_values(self, table_name: str, column_name: str) -> list:
         """Lấy danh sách giá trị distinct của 1 cột (cho ComboBox filter)."""
@@ -504,6 +510,7 @@ class DatabaseManager:
             return [row[0] for row in cursor.fetchall()]
         finally:
             conn.close()
+        return []
 
     def get_row_count(self, table_name: str) -> int:
         """Đếm số dòng trong bảng."""
@@ -513,6 +520,7 @@ class DatabaseManager:
             return cursor.fetchone()[0]
         finally:
             conn.close()
+        return 0
 
     def delete_all_data(self, table_name: str):
         """Xóa toàn bộ dữ liệu trong bảng."""
@@ -543,7 +551,7 @@ class DatabaseManager:
             conn.close()
 
     def export_to_excel(self, table_name: str, file_path: str,
-                        data: Optional[list] = None):
+                        data: Optional[list] = None) -> None:
         """Export dữ liệu ra file Excel."""
         headers = TABLE_HEADERS.get(table_name, [])
         if data is None:
@@ -555,7 +563,7 @@ class DatabaseManager:
         else:
             df.to_excel(file_path, index=False, engine='openpyxl')
 
-    def get_price_statistics(self, table_name: str, criteria: dict) -> dict:
+    def get_price_statistics(self, table_name: str, criteria: dict) -> dict[str, int]:
         """
         Lấy thống kê giá (Min, Max, Count) dựa trên tiêu chí search chính xác.
         criteria: dictionary {column_name: value}
@@ -599,16 +607,18 @@ class DatabaseManager:
         """
         
         conn = self._get_connection()
+        result = {'min': 0, 'max': 0, 'count': 0}
         try:
             cursor = conn.execute(sql, params)
             row = cursor.fetchone()
             if row:
-                return {
+                result = {
                     'min': row[0] or 0,
                     'max': row[1] or 0,
                     'count': row[2] or 0
                 }
-            return {'min': 0, 'max': 0, 'count': 0}
+        except Exception:
+             pass
         finally:
             conn.close()
-
+        return result

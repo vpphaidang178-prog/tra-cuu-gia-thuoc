@@ -50,12 +50,10 @@ def main():
     # Check for updates silently on startup
     from updater import AppUpdater
     try:
-        updater = AppUpdater()
-        # You might want to run this in a separate thread to not block UI
-        # For simplicity, we just call it here, but ideally use QThread
-        import threading
-        update_thread = threading.Thread(target=updater.check_for_updates, kwargs={'manual': False})
-        update_thread.start()
+        # AppUpdater now uses QThread internally, so we don't need threading.Thread here
+        # We need to keep a reference to updater so it doesn't get garbage collected
+        app.updater = AppUpdater() 
+        app.updater.check_for_updates(manual=False)
     except Exception as e:
         print(f"Update check failed: {e}")
 
