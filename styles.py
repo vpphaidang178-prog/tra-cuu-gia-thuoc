@@ -355,6 +355,39 @@ QMessageBox QLabel {{
     font-size: 13px;
 }}
 
+/* ========== TAB WIDGET ========== */
+QTabWidget::pane {{
+    border: 1px solid {theme['border']};
+    background-color: {theme['widget_bg']};
+}}
+
+QTabWidget::tab-bar {{
+    left: 5px; /* move to the right by 5px */
+}}
+
+QTabBar::tab {{
+    background-color: {theme['app_bg']};
+    color: {theme['text_dim']};
+    border: 1px solid {theme['border']};
+    border-bottom-color: {theme['border']};
+    padding: 8px 16px;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    margin-right: 4px;
+}}
+
+QTabBar::tab:selected {{
+    background-color: {theme['widget_bg']};
+    color: {theme['primary']};
+    font-weight: 700;
+    border-bottom: 2px solid {theme['primary']};
+}}
+
+QTabBar::tab:hover:!selected {{
+    background-color: {theme['grid_line']};
+    color: {theme['text_main']};
+}}
+
 /* ========== STACKED WIDGET ========== */
 QStackedWidget {{
     background-color: {theme['app_bg']};
